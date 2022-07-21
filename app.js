@@ -5,9 +5,18 @@ const app = express();
 const SECRETE_KEY = 'mi-clave-secreta-xd';
 
 //add rutas
-app.get('/api', (req, res) => {
-    res.json({
-        mensaje: 'qloq'
+app.get('/api/post', verificarToken, (req, res) => {
+    jwt.verify(req.token, SECRETE_KEY, (err, authData) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            const posts = [
+                {id: 1, nombre: 'titulo 1', user: 'angel'},
+                {id: 2, nombre: 'titulo 2', user: 'angel'},
+                {id: 3, nombre: 'titulo 3', user: 'angel'},
+            ]
+            res.json({posts})
+        }
     })
 })
 
@@ -20,7 +29,7 @@ app.post('/login', (req, res) => {
     }
 
     //identificar al usuario
-    jwt.sign({user}, SECRETE_KEY, {expiresIn: '15s'}, (err, token) => {
+    jwt.sign({user}, SECRETE_KEY, {expiresIn: '60s'}, (err, token) => {
         if (err) return; //si hay algun error pues muere
         res.json({
             token
